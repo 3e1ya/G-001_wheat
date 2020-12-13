@@ -6,13 +6,25 @@ using DG.Tweening;
 namespace MugitoDokumugi.AdvOkujo {
     public class Sentence : MonoBehaviour {
         Text text;
-        private void Start() {
+        public bool rendering;
+        void Awake() {
             text = this.gameObject.GetComponent<Text>();
         }
+        void FixedUpdate()
+        {
+            if (DOTween.IsTweening(text))
+            {
+                rendering = true;
+            }
+            else 
+            {
+                rendering = false;
+            }
+        }
         public void Render(float speed) {
-            text.DOPause();
+            text.DOKill();
             text.text = "";
-            text.DOText(ScenarioModel.Instance.text, speed).SetEase(Ease.Linear);
+            text.DOText(ScenarioModel.Instance.text, ScenarioModel.Instance.text.Length * speed);
         }
     }
 }

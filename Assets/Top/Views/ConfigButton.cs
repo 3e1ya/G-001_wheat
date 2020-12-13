@@ -1,18 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class ConfigButton : MonoBehaviour
+﻿using UnityEngine;
+using UniRx;
+using MugitoDokumugi.Common;
+namespace MugitoDokumugi.Common
 {
-    // Start is called before the first frame update
-    void Start()
+    public class ConfigButton : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public Subject<Unit> subject = new Subject<Unit>();
+        public void OnClick()
+        {
+            Debug.Log("OnClick");
+            subject.OnNext(Unit.Default);
+            SoundController.Instance.PlaySe(1);
+        }
     }
 }

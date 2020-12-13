@@ -6,15 +6,27 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/PreLoad/PreLoad.unity
+    guid: 67f5c8608aad1e74bbc5fd5d9714e52b
+  - enabled: 1
     path: Assets/Top/Top.unity
     guid: 1086cd0fb671d2549a723e8a7a7d2d4e
-  - enabled: 1
-    path: Assets/AdvRoom/AdvRoom.unity
-    guid: c83a7458e539cf44ebc70d49b7db1b41
   - enabled: 1
     path: Assets/Credit/Credit.unity
     guid: 9bec795b695a9ff47888f10ec11c431d
   - enabled: 1
     path: Assets/Gallery/Gallery.unity
     guid: 4bea21246b068994fa006ebaa99fad8d
+  - enabled: 1
+    path: Assets/AdvRoom/AdvRoom.unity
+    guid: c83a7458e539cf44ebc70d49b7db1b41
+  - enabled: 1
+    path: Assets/AdvApartment/AdvApartment.unity
+    guid: ff684aba0bb549c4aaeebc2ecaf4fbd0
+  - enabled: 1
+    path: Assets/AdvOkujo/AdvOkujo.unity
+    guid: 457ac87ee1fc6c74bb17fb797a683a36
+  - enabled: 1
+    path: Assets/AdvEnd/AdvEnd.unity
+    guid: cac36e52160c42f41a804bb4dfceafba
   m_configObjects: {}

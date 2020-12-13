@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace MugitoDokumugi.AdvOkujo {
     public class Pagebreak : MonoBehaviour {
-        private Animator animator = null;
+        [SerializeField] private Animator animator = null;
         private void Start() {
             animator = this.gameObject.GetComponent<Animator>();
+            //Anime();
         }
         public void Anime() {
             animator.Play("pagebreak");

@@ -1,197 +1,151 @@
 using System.Collections;
-using UnityEngine;
 using System.Collections.Generic;
-namespace MugitoDokumugi
+using UnityEngine;
+namespace MugitoDokumugi.Common
 {
-    public class SoundController : MonoBehaviour
+    [System.Serializable]
+    public class SoundVolume
     {
+        public float bgm = 1.0f;
+        public float se = 1.0f;
+        public bool mute = false;
+        public void Reset()
+        {
+            bgm = 1.0f;
+            se = 1.0f;
+            mute = false;
+        }
+    }
+    public class SoundController : SingletonMonoBehaviour<SoundController>
+    {
+        public SoundVolume volume = new SoundVolume();
+        [SerializeField] private AudioClip[] seclips;
+        [SerializeField] private AudioClip[] bgmclips;
+        private Dictionary<string, int> seindexes = new Dictionary<string, int>();
+        private Dictionary<string, int> bgmindexes = new Dictionary<string, int>();
+        const int channelnum = 16;
+        private AudioSource bgmsource;
+        private AudioSource[] sesources = new AudioSource[channelnum];
+        Queue<int> serequestqueue = new Queue<int>();
+        void Awake()
+        {
+            DontDestroyOnLoad(this);
+            if (this != Instance)
+            {
+                Destroy(this);
+                return;
+            }
+            
+            bgmsource = gameObject.AddComponent<AudioSource>();
+            bgmsource.loop = true;
+            for (int i = 0; i < sesources.Length; i++)
+            {
+                sesources[i] = gameObject.AddComponent<AudioSource>();
+            }
+            seclips = Resources.LoadAll<AudioClip>("Common/Sound/Se");
+            bgmclips = Resources.LoadAll<AudioClip>("Common/Sound/Bgm");
+            for (int i = 0; i < seclips.Length; ++i)
+            {
+                seindexes[seclips[i].name] = i;
+            }
+            for (int i = 0; i < bgmclips.Length; ++i)
+            {
+                bgmindexes[bgmclips[i].name] = i;
+            }
+        }
         void Update()
         {
-            _sourceBgm.volume = GameParamater.bgmvolume;
-            _sourceSeDefault.volume = GameParamater.sevolume;
-        }
-        /// SEチャンネル数
-        const int SE_CHANNEL = 4;
-        /// サウンド種別
-        enum eType
-        {
-            Bgm, // BGM
-            Se,  // SE
-        }
-        // シングルトン
-        static SoundController _singleton = null;
-        // インスタンス取得
-        public static SoundController GetInstance()
-        {
-            return _singleton ?? (_singleton = new SoundController());
-        }
-        // サウンド再生のためのゲームオブジェクト
-        GameObject _object = null;
-        // サウンドリソース
-        AudioSource _sourceBgm = null; // BGM
-        AudioSource _sourceSeDefault = null; // SE (デフォルト)
-        AudioSource[] _sourceSeArray; // SE (チャンネル)
-        // BGMにアクセスするためのテーブル
-        Dictionary<string, _Data> _poolBgm = new Dictionary<string, _Data>();
-        // SEにアクセスするためのテーブル 
-        Dictionary<string, _Data> _poolSe = new Dictionary<string, _Data>();
-        /// 保持するデータ
-        class _Data
-        {
-            /// アクセス用のキー
-            public string Key;
-            /// リソース名
-            public string ResName;
-            /// AudioClip
-            public AudioClip Clip;
-            /// コンストラクタ
-            public _Data(string key, string res)
+            //set mute
+            bgmsource.mute = volume.mute;
+            foreach(var source in sesources)
             {
-                Key = key;
-                ResName = "Common/Sound/" + res;
-                // AudioClipの取得
-                Clip = Resources.Load(ResName) as AudioClip;
+                source.mute = volume.mute;
+            }
+            //set volume
+            bgmsource.volume = volume.bgm;
+            foreach(var source in sesources)
+            {
+                source.volume = volume.se;
+            }
+            //channel
+            int count = serequestqueue.Count;
+            if (count != 0)
+            {
+                int se_index = serequestqueue.Dequeue();
+                PlaySeImpl(se_index);
             }
         }
-        /// コンストラクタ
-        public SoundController()
+        private void PlaySeImpl(int index)
         {
-            // チャンネル確保
-            _sourceSeArray = new AudioSource[SE_CHANNEL];
-        }
-        /// AudioSourceを取得する
-        AudioSource _GetAudioSource(eType type, int channel = -1)
-        {
-            if (_object == null)
+            if (0 > index || seclips.Length <= index)
             {
-                // GameObjectがなければ作る
-                _object = new GameObject("SoundController");
-                // 破棄しないようにする
-                GameObject.DontDestroyOnLoad(_object);
-                _object.AddComponent<SoundController>();
-                // AudioSourceを作成
-                _sourceBgm = _object.AddComponent<AudioSource>();
-                _sourceSeDefault = _object.AddComponent<AudioSource>();
-                for (int i = 0; i < SE_CHANNEL; i++)
-                {
-                    _sourceSeArray[i] = _object.AddComponent<AudioSource>();
-                }
-                
+                return;
             }
-            if (type == eType.Bgm)
+            foreach (AudioSource source in sesources)
             {
-                // BGM
-                return _sourceBgm;
-            }
-            else
-            {
-                // SE
-                if (0 <= channel && channel < SE_CHANNEL)
+                if (source.isPlaying == false)
                 {
-                    // チャンネル指定
-                    return _sourceSeArray[channel];
-                }
-                else
-                {
-                    // デフォルト
-                    return _sourceSeDefault;
+                    source.clip = seclips[index];
+                    source.Play();
+                    return;
                 }
             }
         }
-        // サウンドのロード
-        // ※Resources/Soundsフォルダに配置すること
-        public static void LoadBgm(string key, string resName)
+        public int GetSeIndex(string name)
         {
-            GetInstance()._LoadBgm(key, resName);
+            return seindexes[name];
         }
-        public static void LoadSe(string key, string resName)
+        public int GetBgmIndex(string name)
         {
-            GetInstance()._LoadSe(key, resName);
+            return bgmindexes[name];
         }
-        void _LoadBgm(string key, string resName)
+        public void PlayBgm(string name)
         {
-            if (_poolBgm.ContainsKey(key))
+            int index = bgmindexes[name];
+            PlayBgm(index);
+        }
+        public void PlayBgm(int index)
+        {
+            if (0 > index || bgmclips.Length <= index)
             {
-                // すでに登録済みなのでいったん消す
-                _poolBgm.Remove(key);
+                return;
             }
-            _poolBgm.Add(key, new _Data(key, resName));
-        }
-        void _LoadSe(string key, string resName)
-        {
-            if (_poolSe.ContainsKey(key))
+            if (bgmsource.clip == bgmclips[index])
             {
-                // すでに登録済みなのでいったん消す
-                _poolSe.Remove(key);
+                return;
             }
-            _poolSe.Add(key, new _Data(key, resName));
+            bgmsource.Stop();
+            bgmsource.clip = bgmclips[index];
+            bgmsource.Play();
         }
-        /// BGMの再生
-        /// ※事前にLoadBgmでロードしておくこと
-        public static bool PlayBgm(string key)
+        public void StopBgm()
         {
-            return GetInstance()._PlayBgm(key);
+            bgmsource.Stop();
+            bgmsource.clip = null;
         }
-        bool _PlayBgm(string key)
+        public void PlaySe(string name)
         {
-            if (_poolBgm.ContainsKey(key) == false)
+            PlaySe(GetSeIndex(name));
+        }
+        public void PlaySe(int index)
+        {
+            if (!serequestqueue.Contains(index))
             {
-                // 対応するキーがない
-                return false;
+                serequestqueue.Enqueue(index);
             }
-            // いったん止める
-            _StopBgm();
-            // リソースの取得
-            var _data = _poolBgm[key];
-            // 再生
-            var source = _GetAudioSource(eType.Bgm);
-            source.loop = true;
-            source.clip = _data.Clip;
-            source.volume = GameParamater.bgmvolume;
-            source.Play();
-            return true;
         }
-        /// BGMの停止
-        public static bool StopBgm()
+        public void StopSe()
         {
-            return GetInstance()._StopBgm();
-        }
-        bool _StopBgm()
-        {
-            _GetAudioSource(eType.Bgm).Stop();
-            return true;
-        }
-        /// SEの再生
-        /// ※事前にLoadSeでロードしておくこと
-        public static bool PlaySe(string key, int channel = -1)
-        {
-            return GetInstance()._PlaySe(key, channel);
-        }
-        bool _PlaySe(string key, int channel = -1)
-        {
-            if (_poolSe.ContainsKey(key) == false)
+            ClearAllSeRequest();
+            foreach (AudioSource source in sesources)
             {
-                // 対応するキーがない
-                return false;
+                source.Stop();
+                source.clip = null;
             }
-            // リソースの取得
-            var _data = _poolSe[key];
-            if (0 <= channel && channel < SE_CHANNEL)
-            {
-                // チャンネル指定
-                var source = _GetAudioSource(eType.Se, channel);
-                source.clip = _data.Clip;
-                source.volume = GameParamater.sevolume;
-                source.Play();
-            }
-            else
-            {
-                // デフォルトで再生
-                var source = _GetAudioSource(eType.Se);
-                source.volume = GameParamater.sevolume;
-                source.PlayOneShot(_data.Clip);
-            }
-            return true;
+        }
+        public void ClearAllSeRequest()
+        {
+            serequestqueue.Clear();
         }
     }
 }

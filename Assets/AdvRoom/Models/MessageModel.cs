@@ -11,10 +11,14 @@ namespace MugitoDokumugi.AdvRoom {
                 return instance;
             }
         }
+        public int id { get; set; }
+        public int characterid { get; set; }
         public string charactername { get; set; }
         public string text { get; set; }
         public void Set(int id) {
             ScenarioData scenario = Resources.Load<ScenarioData>("AdvRoom/Scenarios/Scenario");
+            this.id = scenario.list[id].id;
+            this.characterid = scenario.list[id].characterid;
             this.charactername = scenario.list[id].charactername;
             this.text = scenario.list[id].text;
         }

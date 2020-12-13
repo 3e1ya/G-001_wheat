@@ -1,27 +1,48 @@
 ﻿using UnityEngine;
 using UniRx;
 using UnityEngine.SceneManagement;
+using MugitoDokumugi.Common;
 namespace MugitoDokumugi.AdvRoom {
     public class GameController : MonoBehaviour {
-        [SerializeField] private WindowView windowview = null;
-        [SerializeField] private MessageView messageview = null;
+        [SerializeField] private CharacterName charactername = null;
+        [SerializeField] private Sentence sentence = null;
+        [SerializeField] private Pagebreak pagebreak = null;
+        [SerializeField] private NextButton nextbutton = null;
         [SerializeField] private int id = 0;
         [SerializeField] private int maxid;
-        public void Start() {
+        void Start() {
             //最大頁数を取得
             maxid = MessageModel.Instance.GetMax();
+            //初ページ表示
+            NextParamater();
             //ウィンドウを監視してクリックされたら次の頁を表示
-            windowview.subject
-                .Subscribe(x => Message());
+            nextbutton.subject
+                .Subscribe(x => NextParamater());
+            SoundController.Instance.PlayBgm(1);
         }
-        public void Message() {
-            if (id < maxid) {
+        void Update()
+        {
+            if (sentence.rendering)
+            {
+                pagebreak.Stand();
+            }
+            else if (!sentence.rendering)
+            {
+                pagebreak.Anime();
+            }
+        }
+        void NextParamater() {
+            if (id < maxid)
+            {
+                pagebreak.Stand();
                 MessageModel.Instance.Set(id);
                 id++;
-                messageview.RenderText(1);
+                charactername.Render();
+                sentence.Render(0.1f);
             }
-            else {
-                SceneManager.LoadScene("AdvApart");
+            else
+            {
+                SceneManager.LoadScene("AdvApartment");
             }
         }
     }

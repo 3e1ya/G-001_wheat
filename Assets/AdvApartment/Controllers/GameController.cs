@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UniRx;
 using UnityEngine.SceneManagement;
+using MugitoDokumugi.Common;
 namespace MugitoDokumugi.AdvApart {
     public class GameController : MonoBehaviour {
         [SerializeField] private Keyboard keyboard = null;
@@ -11,7 +12,9 @@ namespace MugitoDokumugi.AdvApart {
                 .Subscribe(message => RyoIchinomiya(message));
             background.subject
                 .Subscribe(message => BackGround(message));
+            SoundController.Instance.PlayBgm(2);
         }
+
         private void RyoIchinomiya(string message) {
             if (message == "A") {
                 ryoichinomiya.LeftWalk();
@@ -27,6 +30,7 @@ namespace MugitoDokumugi.AdvApart {
         }
         private void BackGround(string message) {
             if (message == "RightMax") {
+                SceneManager.LoadScene("AdvOkujo");
                 // 主人公がエレベータにのるイベント
             }
             else if (message == "LeftMax") {

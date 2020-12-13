@@ -11,7 +11,7 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
                 instance = (T)FindObjectOfType(typeof(T));
                 if (instance == null)
                 {
-                    Debug.LogError(typeof(T) + "Ç™ÉVÅ[ÉìÇ…ë∂ç›ÇµÇ‹ÇπÇÒÅB");
+                    Debug.LogError(typeof(T) + " does not exist");
                 }
             }
             return instance;

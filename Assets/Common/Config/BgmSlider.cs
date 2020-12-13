@@ -1,23 +1,19 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-namespace MugitoDokumugi
+namespace MugitoDokumugi.Common
 {
     public class BgmSlider : MonoBehaviour
     {
         Slider slider;
-        private void OnStart()
+        void Start()
         {
-            SoundController.LoadBgm("1", "Bgm/1_future_start");
-            SoundController.PlayBgm("1");
             slider = GetComponent<Slider>();
-            slider.value = 1f;
+            slider.value = SoundController.Instance.volume.bgm;
         }
-        private void OnUpdate()
+        void Update()
         {
-            GameParamater.bgmvolume = slider.value;
+            SoundController.Instance.volume.bgm = slider.value;
         }
-        private void Start() => OnStart();
-        private void Update() => OnUpdate();
     }
 }

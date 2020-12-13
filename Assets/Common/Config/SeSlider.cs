@@ -1,18 +1,19 @@
 using System.Collections;
 using UnityEngine;
-namespace MugitoDokumugi
+using UnityEngine.UI;
+namespace MugitoDokumugi.Common
 {
     public class SeSlider : MonoBehaviour
     {
-        private void OnStart()
+        Slider slider;
+        void Start()
         {
-
+            slider = GetComponent<Slider>();
+            slider.value = SoundController.Instance.volume.se;
         }
-        private void OnUpdate()
+        void Update()
         {
-
+            SoundController.Instance.volume.se = slider.value;
         }
-        private void Start() => OnStart();
-        private void Update() => OnUpdate();
     }
 }
