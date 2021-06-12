@@ -3,7 +3,7 @@ g001_mugi
 
 theme is future office worker holiday.
 
-<img src="https://img.shields.io/badge/-Unity-000000.svg?logo=unity&style=plastic"> <img src="https://img.shields.io/badge/-Excel2019-239E62.svg?logo=microsoft-excel&style=plastic">
+<img src="https://img.shields.io/badge/-Unity-000000.svg?logo=unity&style=plastic"> <img src="https://img.shields.io/badge/-Excel-239E62.svg?logo=microsoft-excel&style=plastic">
 
 ## demo
 
