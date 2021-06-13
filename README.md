@@ -1,9 +1,9 @@
 G-001_wheat
 ====
 
-cocept is future office worker holiday.
+concept is future office worker holiday.
 
-<img src="https://img.shields.io/badge/-unity-000000.svg?logo=unity&style=plastic"> <img src="https://img.shields.io/badge/-excel-239E62.svg?logo=microsoft-excel&style=plastic">
+<img src="https://img.shields.io/badge/-unity-red.svg?logo=unity&style=plastic"> <img src="https://img.shields.io/badge/-excel-yellow.svg?logo=microsoft-excel&style=plastic">
 
 ## demo
 
