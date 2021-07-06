@@ -1,7 +1,7 @@
-G-001_wheat
+poisonwheat
 ====
 
-concept is future office worker holiday.
+A novel game to experience an office worker's holiday
 
 <img src="https://img.shields.io/badge/-unity-red.svg?logo=unity&style=plastic"> <img src="https://img.shields.io/badge/-excel-yellow.svg?logo=microsoft-excel&style=plastic">
 
@@ -11,4 +11,4 @@ concept is future office worker holiday.
 
 ## license
 
-g001_wheat is licensed under the [cc-by-4.0](https://creativecommons.org/licenses/by/4.0/deed.en) license.
+poisonwheat is licensed under the [cc-by-4.0](https://creativecommons.org/licenses/by/4.0/deed.en) license.
