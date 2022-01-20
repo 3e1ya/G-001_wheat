@@ -4,4 +4,4 @@ A novel game to experience an office worker's holiday
 
 ## License
 
-mugi is licensed under the [cc-by-4.0](https://creativecommons.org/licenses/by/4.0/deed.en) license.
+mugi is licensed under the [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/deed.en) license.
